@@ -37,3 +37,10 @@ Once that initial setup is done, logging becomes very very simple.
 # Note the first parameter is the logging stream (ie an individual log)
 $this->watchtower->log("registration", "Oh no. Steve tried to enrol again. Don't worry, we stopped him!");
 ```
+
+If you want to notify the email addresses specified in the config file, supply a third parameter of true.
+
+```php
+# Note the third parameter is now "true". This is the "Notify" parameter.
+$this->watchtower->log("registration", "Oh no. Steve tried to enrol again. Don't worry, we stopped him!", true);
+```

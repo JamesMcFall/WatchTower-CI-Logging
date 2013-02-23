@@ -9,10 +9,10 @@
  * 
  * The two main points of WatchTower are:
  * - Writing to log files.
- * - Optionally notifying an administrator if it's a SHTF situation. @todo V0.2
+ * - Optionally notifying a list of email addresses if it's a SHTF situation.
  * 
  * @author James McFall <james@mcfall.geek.nz>
- * @version 0.1
+ * @version 0.2
  */
 class WatchTower {
     
@@ -67,6 +67,60 @@ class WatchTower {
             $time->format($this->_conf["timeFormat"]) . " - " . 
             $message . "\n\n"
         );
+        
+        if ($notify === true) {
+            $this->_sendNotificationEmail($time, $message);
+        }
+        
+    }
+    
+    /**
+     * Send Notification Email
+     * 
+     * This method builds a very basic html email to send to the people in the
+     * notify array in the config file. Basic fallback to non-html is just the
+     * log line entry.
+     * 
+     * @param <DateTime> $time
+     * @param <string> $message
+     * @return <boolean> 
+     */
+    private function _sendNotificationEmail($time, $message) {
+        
+        # If the email library is not loaded, load it up
+        if (!isset($this->_ci->email)) {
+            $this->_ci->load->library('email');
+        }
+        
+        $timeString = $time->format($this->_conf["timeFormat"]);
+        
+        # Build the basic HTML message for the email
+        $htmlMessage  = "<h3>WatchTower Notification: " . $_SERVER['HTTP_HOST'] . "</h3>";
+        $htmlMessage .= "<b>Time:</b> " . $timeString . "<br /><br />";
+        $htmlMessage .= "<b>Message:</b> " . $message;
+        
+        # Not sure if this is required, but set the mailtype to HTML
+        $this->_ci->email->initialize(array('mailtype' => 'html'));
+
+        # Set up message details
+        $this->_ci->email->from("watchtower@" . $_SERVER['HTTP_HOST'], "WatchTower Logger");
+        $this->_ci->email->reply_to("watchtower@" . $_SERVER['HTTP_HOST']);
+        $this->_ci->email->subject("WatchTower Notification: " . $_SERVER['HTTP_HOST']);
+        $this->_ci->email->message($htmlMessage);
+        $this->_ci->email->set_alt_message($timeString . " - " . $message);
+        
+        # Add all of the "who to notify" entries to the email
+        $count = 0;
+        foreach ($this->_conf["whoToNotify"] as $emailAddress) {
+            # First email address set to "to", others are cc'd.
+            if ($count === 0) {
+                $this->_ci->email->to($emailAddress);
+            } else {
+                $this->_ci->email->cc($emailAddress);
+            }
+        }
+        
+        return $this->_ci->email->send();
     }
     
     
