@@ -3,22 +3,25 @@
  * WatchTower Logger - Easier CI logging.
  * 
  * WatchTower is a basic Codeigniter logging library that is not meant to 
- * replace CodeIgniters logging or the server lever error logs. The whole 
- * purpose of WatchTower is to provide an easy means to set up and write to a 
- * number of various log files in a consistent and easy way.
+ * replace CodeIgniters logging or the server level error logs. 
+ * 
+ * The whole purpose of WatchTower is to provide an easy means to set up and 
+ * write to a number of various log files in a consistent and easy way.
  * 
  * The two main points of WatchTower are:
  * - Writing to log files.
  * - Optionally notifying a list of email addresses if it's a SHTF situation.
  * 
  * @author James McFall <james@mcfall.geek.nz>
- * @version 0.2
+ * @version 0.2.1
  */
 class WatchTower {
     
-    # Class Properties
-    private $_conf  = null;
-    private $_ci    = null;
+    /**
+     * Class Properties
+     */
+    private $_conf  = null; # Stores the config file watchtower settings
+    private $_ci    = null; # Instance of CI
     
     
     /**
@@ -46,7 +49,7 @@ class WatchTower {
      * Write message to a log file
      * 
      * This method will write the supplied message to the specified log file 
-     * using the current server time in the log. 
+     * (stream) using the current server time in the log. 
      * 
      * @param <string> $stream - The log stream
      * @param <string> $message - The error message
@@ -112,12 +115,15 @@ class WatchTower {
         # Add all of the "who to notify" entries to the email
         $count = 0;
         foreach ($this->_conf["whoToNotify"] as $emailAddress) {
+           
             # First email address set to "to", others are cc'd.
             if ($count === 0) {
                 $this->_ci->email->to($emailAddress);
             } else {
                 $this->_ci->email->cc($emailAddress);
             }
+            
+            $i++;
         }
         
         return $this->_ci->email->send();
@@ -136,6 +142,7 @@ class WatchTower {
      */
     private function _buildFileStructure() {
         
+        # Log Directory Creation
         # Try to make the log directory if it doesn't exist
         if (!is_dir($this->_conf['logDir'])) {
             
@@ -150,10 +157,18 @@ class WatchTower {
             
         }
         
-        
-        # Now try to create an individual log file for each stream.
+        # Log File Creation
+        # Try to create an individual log file for each stream if they don't exist.
         foreach ($this->_conf['streams'] as $stream) {
-            $touch = @touch($this->_conf['logDir'] . "/" . $stream . ".log");
+            $filePath = $this->_conf['logDir'] . "/" . $stream . ".log";
+            
+            # Skip if this file already exists
+            if (file_exists($filePath)) {
+                continue;
+            }
+            
+            # Try to create the log file.
+            $touch = @touch($filePath);
             
             if (!$touch) {
                 throw new Exception("WatchTower Exception: Failed to create log
