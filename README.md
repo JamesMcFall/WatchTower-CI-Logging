@@ -33,11 +33,14 @@ $config['watchtower'] = array(
 ## Usage
 Once that initial setup is done, logging becomes very very simple.
 
+### Basic logging
+Logging is very straightforward. The first parameter specifies which log/stream you want to write into. The second parameter is the message to put in the log file (automatically prepended with a date/time in the format specified in the config file).
 ```php
 # Note the first parameter is the logging stream (ie an individual log)
 $this->watchtower->log("registration", "Oh no. Steve tried to enrol again. Don't worry, we stopped him!");
 ```
 
+### Sending a notification email out when an error is logged.
 If you want to notify the email addresses specified in the config file, supply a third parameter of true.
 
 ```php
@@ -45,6 +48,7 @@ If you want to notify the email addresses specified in the config file, supply a
 $this->watchtower->log("registration", "Oh no. Steve tried to enrol again. Don't worry, we stopped him!", true);
 ```
 
+### Dumping debugging data into the log
 In some instances you'll likely be wanting to dump an array or object into a log. A method has been added into the logger to make this easy.
 
 ```php
