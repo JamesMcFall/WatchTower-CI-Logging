@@ -13,7 +13,7 @@
  * - Optionally notifying a list of email addresses if it's a SHTF situation.
  * 
  * @author James McFall <james@mcfall.geek.nz>
- * @version 0.2.1
+ * @version 0.3
  */
 class WatchTower {
     
@@ -123,10 +123,23 @@ class WatchTower {
                 $this->_ci->email->cc($emailAddress);
             }
             
-            $i++;
+            $count++;
         }
         
         return $this->_ci->email->send();
+    }
+    
+    
+    /**
+     * Dump a variable into the outpub buffer and catch it as a string.
+     * 
+     * @param <any> $var
+     * @return <string> 
+     */
+    public function dumpVarToString($var) {
+        ob_start();
+        var_dump($string);
+        return "\n\n".ob_get_clean();
     }
     
     

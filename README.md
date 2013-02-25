@@ -44,3 +44,14 @@ If you want to notify the email addresses specified in the config file, supply a
 # Note the third parameter is now "true". This is the "Notify" parameter.
 $this->watchtower->log("registration", "Oh no. Steve tried to enrol again. Don't worry, we stopped him!", true);
 ```
+
+In some instances you'll likely be wanting to dump an array or object into a log. A method has been added into the logger to make this easy.
+
+```php
+$o = new stdClass();
+$o->one   = 1;
+$o->two   = 2;
+$o->three = 3;
+            
+$this->watchtower->log("registration", "Log an object: " . $this->watchtower->dumpVarToString($o));
+```
