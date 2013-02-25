@@ -1,7 +1,7 @@
 WatchTower-CI-Logging
 =====================
 
-WatchTower is a CodeIgniter library for writing to (and automatically generating) a series of log files with the option of notifying an admin when the SHTF (notifications in next version). 
+WatchTower is a CodeIgniter library for writing to (and automatically generating) a series of log files with the option of notifying an admin when the SHTF. 
 
 Most applications I work on have some very distinct areas of functionality that require logging on their own. I wanted to make this as simple as possible. By configuring a few logging "streams" (ie basically a list of log files) WatchTower will create these log files for you and you can log to each one by just specifying the stream and a message.
 
