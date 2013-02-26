@@ -13,7 +13,7 @@
  * - Optionally notifying a list of email addresses if it's a SHTF situation.
  * 
  * @author James McFall <james@mcfall.geek.nz>
- * @version 0.3
+ * @version 0.3.1
  */
 class WatchTower {
     
@@ -138,7 +138,7 @@ class WatchTower {
      */
     public function dumpVarToString($var) {
         ob_start();
-        var_dump($string);
+        var_dump($var);
         return "\n\n".ob_get_clean();
     }
     
