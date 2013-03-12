@@ -13,7 +13,7 @@
  * - Optionally notifying a list of email addresses if it's a SHTF situation.
  * 
  * @author James McFall <james@mcfall.geek.nz>
- * @version 0.3.1
+ * @version 1.0
  */
 class WatchTower {
     
