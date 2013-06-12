@@ -3,7 +3,7 @@ WatchTower-CI-Logging
 
 WatchTower is a CodeIgniter library for writing to (and automatically generating) a series of log files with the option of notifying an admin when the SHTF. 
 
-Most applications I work on have some very distinct areas of functionality that require logging on their own. I wanted to make this as simple as possible. By configuring a few logging "streams" (ie basically a list of log files) WatchTower will create these log files for you and you can log to each one by just specifying the stream and a message.
+Most applications I work on have some very distinct areas of functionality that require logging on their own. I wanted to make this as simple as possible. By configuring a few logging "streams" (ie basically a list of log files) WatchTower will create these log files for you and you can log to each one by just specifying the stream and a message. If your application does a large amount of logging, an option is available to have WatchTower automatically create a month or day specific log file instead of one single very large log file.
 
 Too many applications I come across have very limited logging implemented and it can make diagnosing issues very difficult. Hopefully by making logging easy, it will happen more often.
 
@@ -26,7 +26,8 @@ $config['watchtower'] = array(
     "logDir"        => BASEPATH . "../watchtower-logs",
     "whoToNotify"   => array("you@your-domain.com"), # Each email in this array will be notified
     "streams"       => array("registration", "web-service"), # Each of these streams will have a .log file generated for them
-    "timeFormat"    => "Y-m-d G:i:s" # You can override the log entry time format if you wish
+    "timeFormat"    => "Y-m-d G:i:s", # You can override the log entry time format if you wish
+    "storageMode"   => "monthly" # Options: "single", "monthly", "daily". WatchTower can split logs into monthly or daily files if you prefer.
 );
 ```
 

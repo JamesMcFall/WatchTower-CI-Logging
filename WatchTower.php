@@ -13,7 +13,7 @@
  * - Optionally notifying a list of email addresses if it's a SHTF situation.
  * 
  * @author James McFall <james@mcfall.geek.nz>
- * @version 1.0
+ * @version 1.1
  */
 class WatchTower {
     
@@ -33,7 +33,6 @@ class WatchTower {
      * @return <void>
      */
     public function __construct() {
-        
         $this->_ci = &get_instance();
         
         # Load up the CI configuration information & validate it
@@ -62,7 +61,7 @@ class WatchTower {
         $time = new DateTime();
         
         # Open the log file for editing (a = append mode).
-        $logFilePath = $this->_conf['logDir'] . "/" . $stream . ".log";
+        $logFilePath = $this->_conf['logDir'] . "/" . $stream . $this->_getStreamSuffix() . ".log";
         $logFile = new SplFileObject($logFilePath, "a");
         
         # Append to the end of the log file with a time and a message
@@ -173,7 +172,8 @@ class WatchTower {
         # Log File Creation
         # Try to create an individual log file for each stream if they don't exist.
         foreach ($this->_conf['streams'] as $stream) {
-            $filePath = $this->_conf['logDir'] . "/" . $stream . ".log";
+            
+            $filePath = $this->_conf['logDir'] . "/" . $stream . $this->_getStreamSuffix() . ".log";
             
             # Skip if this file already exists
             if (file_exists($filePath)) {
@@ -219,6 +219,41 @@ class WatchTower {
                 specified in configuration file. Please refer to documentation");
         }
         
+    }
+    
+    
+    /**
+     * Get the log file suffix.
+     * 
+     * With the introduction of the daily and monthly modes, we need to be able
+     * to suffix the end of the file name with a date portion. This method 
+     * returns this portion.
+     * 
+     * @return <string>
+     */
+    private function _getStreamSuffix() {
+        
+        # Are we using a single file, a monthly file or a daily file for each stream?
+        $streamSuffix = null;
+        switch ($this->_conf['storageMode']) {
+            
+            # If the monthly option is required, suffix with i.e. -jun-2013
+            case "monthly":
+                $streamSuffix = "-" . strtolower(date("M")) . "-" . date("Y");
+                break;
+            
+            # If the daily option is required, suffix with i.e. -1-jun-2013
+            case "daily":
+                $streamSuffix = "-" . date("j") . "-" . strtolower(date("M")) . "-" . date("Y");
+                break;
+
+            # Single file mode doesn't need any suffix
+            default:
+                $streamSuffix = "";
+                break;
+        }
+        
+        return $streamSuffix;
     }
 }
 
